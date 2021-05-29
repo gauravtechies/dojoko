@@ -1,9 +1,5 @@
 'use strict'
 
-
-
-
-
 const errorTypes = {
   validation: 'validation',
   unAuthorized: 'UnAuthorized',
@@ -26,7 +22,8 @@ const statusCodes = {
 
 
 const params = {
-  arrayData:"arrayData"
+  arrayData:"arrayData",
+  arrayValue:"arrayValue"
 };
 
 
@@ -34,11 +31,6 @@ const responseContentTypes = {
   json: 'json'
 };
 
-
-const users = {
-  admin:'admin',
-  user:'user'
-};
 
 
 

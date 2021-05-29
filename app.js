@@ -107,11 +107,7 @@ function onListening() {
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
 const db = require('./models');
-
-const authRoute = require('./auth')(db, logger);
-
 const v1Routes = require('./routes/v1')(db, logger);
 
 // view engine setup
@@ -149,7 +145,6 @@ app.get('/healthcheck', (req, res) => {
   res.send('👍');
 });
 
-app.use(authRoute);
 app.use('/v1', v1Routes);
 
 // catch 404 and forward to error handler
