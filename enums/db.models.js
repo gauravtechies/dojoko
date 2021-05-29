@@ -1,9 +1,6 @@
 const models = {
-    user:"user",
-    roles:"roles",
-    jobs:"jobs",
-    notes:"notes"
-    
+    multipleRows:"multipleRows",
+    serialization:"serialization"
 
 };
 
