@@ -6,10 +6,10 @@ const router = express.Router();
 module.exports = (db, logger) => {
   const {
      post
-  } = require('../../handlers/v1/admin/users.handlers')(db, logger);
+  } = require('../../handlers/v1/dataStructure.handlers')(db, logger);
 
   /** Routes */
-  router.post('/users', post);
+  router.post('/dataStructure', post);
   //router.get('/:id', getUser);
  
   return router;
