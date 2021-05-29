@@ -5,7 +5,7 @@ const serializationHelper = require('../../helpers/v1/serialization.helper');
 const userDesc = require("../../enums/responses.desc");
 const model = require("../../enums/db.models")
 
-const myArray=[]
+
 module.exports = (db, logger) => ({
 
     post: async (req, res) => {
@@ -15,6 +15,7 @@ module.exports = (db, logger) => ({
             res.statusCode = enums.statusCodes.badRequest;;
             return res.json(helpers.sendErrorJson(enums.statusCodes.badRequest, errors));
         }
+        const myArray=[]
         let dbInsertionData=null;
         let updateResponse=null;
         try{
@@ -25,11 +26,11 @@ module.exports = (db, logger) => ({
               myArray.push(req.body.arrayData)
               dbInsertionData=JSON.stringify(myArray)
               updateResponse=await serializationHelper.updateSerialization(dbInsertionData);
-              responseObject={yourarray:myArray,count:myArray.length,position:myArray.lastIndexOf(req.body.arrayData)}
-              if(!updateResponse){
+             if(!updateResponse){
                 const errorResp = helpers.createError(enums.params.arrayValue,userDesc.dataNotUpdated, enums.errorTypes.serverError);
                 return res.json(helpers.sendErrorJson(enums.statusCodes.internalServerError, [errorResp]));
               }
+              responseObject={yourarray:myArray,count:myArray.length,position:myArray.lastIndexOf(req.body.arrayData)}
               return res.json(helpers.sendJson(responseObject));
             
             } else {

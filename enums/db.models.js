@@ -1,6 +1,7 @@
 const models = {
     multipleRows:"multipleRows",
-    serialization:"serialization"
+    serialization:"serialization",
+    multipleRowValues:"multipleRowValues"
 
 };
 

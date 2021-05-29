@@ -39,6 +39,5 @@ module.exports = {
   errorTypes,
   statusCodes,
   params,
-  responseContentTypes,
-  users
+  responseContentTypes
 };

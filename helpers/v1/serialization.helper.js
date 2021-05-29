@@ -11,3 +11,11 @@ module.exports.updateSerialization=async(dbInsertionData)=>{
     }
     return false;
 }
+
+module.exports.insertInMultipleRow=async(dbInsertionData,id)=>{
+  const result = await db[model.multipleRowValues].create({ dataValue: dbInsertionData,type:typeof dbInsertionData,multipleRowId:id });
+   if(result){
+       return result;
+   }
+   return false;
+}
