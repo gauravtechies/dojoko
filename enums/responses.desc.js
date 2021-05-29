@@ -46,6 +46,7 @@ const userDesc = {
 
     companyNameEmpty:"CompanyNameIsEmpty",
     emailAlreadyExist:"Email address already exist",
+    arrayDataExist:"Please provide string or integer to insert"
   };
   
   module.exports = userDesc;
