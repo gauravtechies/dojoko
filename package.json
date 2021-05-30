@@ -8,7 +8,6 @@
     "lint": "npx eslint .",
     "start": "node ./app.js"
   },
-  
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.3",
@@ -25,7 +24,6 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    
     "nodemon": "^1.19.0"
   }
 }
