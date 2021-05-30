@@ -21,3 +21,4 @@
 >/v1/multipleRows ==> Multiple Rows in db <br />
 >/v1/serialization ==> Save data in db as serialized data 
 <!-- > npm start >  app.log 2>&1  -->
+ 
