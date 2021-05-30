@@ -9,9 +9,11 @@ const model = require("../../enums/db.models")
 module.exports = (db, logger) => ({
 
     post: async (req, res) => {
+      logger.info(`I am in serialization Handlers`)
         //Validation of data 
         const errors = userValidations.validateArrayData(req.body);
         if (errors.length > 0) {
+          logger.error(`There is validation error ${JSON.stringify(errors)}`)
             res.statusCode = enums.statusCodes.badRequest;;
             return res.json(helpers.sendErrorJson(enums.statusCodes.badRequest, errors));
         }
@@ -19,14 +21,16 @@ module.exports = (db, logger) => ({
         let dbInsertionData=null;
         let updateResponse=null;
         try{
+              logger.info(`Data Sent by user ${JSON.stringify(req.body)}`)
             //Check in Db if value exist
             const serializationTable = await db[model.serialization].findOne({ where: { arrayName: 'myArray' },raw:true });
             //If Value not exist
             if (serializationTable.arrayValue === null ||serializationTable.arrayValue === '' )  {
-              myArray.push(req.body.arrayData)
-              dbInsertionData=JSON.stringify(myArray)
-              updateResponse=await serializationHelper.updateSerialization(dbInsertionData);
+                myArray.push(req.body.arrayData)
+                dbInsertionData=JSON.stringify(myArray)
+                updateResponse=await serializationHelper.updateSerialization(dbInsertionData);
              if(!updateResponse){
+                logger.error(`error in ${updateResponse}`)
                 const errorResp = helpers.createError(enums.params.arrayValue,userDesc.dataNotUpdated, enums.errorTypes.serverError);
                 return res.json(helpers.sendErrorJson(enums.statusCodes.internalServerError, [errorResp]));
               }
@@ -47,6 +51,7 @@ module.exports = (db, logger) => ({
                       //Update db if value is not in array 
                       updateResponse=await serializationHelper.updateSerialization(dbInsertionData);
                       if(!updateResponse){
+                        logger.error(`error in ${updateResponse}`)
                         const errorResp = helpers.createError(enums.params.arrayValue,userDesc.dataNotUpdated, enums.errorTypes.serverError);
                         return res.json(helpers.sendErrorJson(enums.statusCodes.internalServerError, [errorResp]));
                       }
@@ -61,7 +66,7 @@ module.exports = (db, logger) => ({
             }
                 
             }catch(err){
-                logger.error(err)
+                logger.error(`I am in serialization handler ${JSON.stringify(err)}`)
                 const seqError = (err.errors && err.errors.length > 0) ? err.errors[0] : err;
                 const errorResp = helpers.createError(seqError.path, seqError.message, seqError.type);
                 return res.json(helpers.sendErrorJson(enums.statusCodes.internalServerError, [errorResp]));

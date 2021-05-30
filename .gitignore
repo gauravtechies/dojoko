@@ -102,3 +102,9 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Error file of log
+error.log
+
+# Error info 
+info.log

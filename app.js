@@ -8,7 +8,33 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
-const logger = require('pino')();
+// const logger = require('pino')();
+const winston = require('winston')
+const cluster = require('cluster')
+const os =require("os");
+const logger = winston.createLogger({
+  transports: [
+    
+    new winston.transports.File({
+      filename: 'info.log',
+      level: 'info'
+    }),
+    new winston.transports.File({
+      filename: 'error.log',
+      level: 'error'
+    })
+  ]
+});
+if(cluster.isMaster){
+  //Master process
+  const n_cpus=os.cpus().length;
+  logger.info(`Forking ${n_cpus} CPUs`)
+  for(let i=0;i<n_cpus;i++){
+    cluster.fork();
+  }
+}else{
+
+
 
 function reqSerializer(req) {
   return {
@@ -19,7 +45,23 @@ function reqSerializer(req) {
 }
 
 
+
+
 const app = express();
+ logger.info({
+  message:`Worker ${process.pid} started`
+});
+function logRequest(req, res, next) {
+  logger.info(req.url)
+  next()
+}
+app.use(logRequest)
+
+function logError(err, req, res, next) {
+  logger.error(err)
+  next()
+}
+app.use(logError)
 app.use(cors())
 let apiVersion = null;
 
@@ -120,6 +162,8 @@ app.use((req, res, next) => {
   next();
 });
 
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -163,5 +207,6 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.json({ errors: err.message });
 });
-
 module.exports = app;
+}
+

@@ -9,10 +9,11 @@ const dbEnums = require('../../enums/db.models');
 module.exports = (db, logger) => ({
 
     post: async (req, res) => {
-
+        logger.info(`I am in multiple Rows Handlers`)
         //Validation of data 
-        const errors = userValidations.validateArrayData(req.body);
+        const errors = userValidations.validateArrayData(req.body); //Validating incoming data
         if (errors.length > 0) {
+            logger.error(`There is validation error ${JSON.stringify(errors)}`)
             res.statusCode = enums.statusCodes.badRequest;;
             return res.json(helpers.sendErrorJson(enums.statusCodes.badRequest, errors));
         }
@@ -20,7 +21,8 @@ module.exports = (db, logger) => ({
         const myArray=[]
         try{
             //Check in Db if value exist
-            
+            logger.info(`Data Sent by user ${JSON.stringify(req.body)}`)
+            // Getting data of array
             const multipleDataTable = await db[model.multipleRows].findOne({
                where: { 
                  arrayName: 'myArray'
@@ -34,16 +36,15 @@ module.exports = (db, logger) => ({
               
              });
              let arrayRows=multipleDataTable.dataValues.multipleRowValues;
-            //  return res.send("hello")
-            //If Value not exist
+             //If Value not exist
             if (arrayRows.length ==0 )  {
-              
+              logger.info(`Array Rows length ${arrayRows.length}`) 
               insertRow=await serializationHelper.insertInMultipleRow(req.body.arrayData,multipleDataTable.dataValues.id);
               if(!insertRow){
                 const errorResp = helpers.createError(enums.params.arrayValue,userDesc.dataNotUpdated, enums.errorTypes.serverError);
                 return res.json(helpers.sendErrorJson(enums.statusCodes.internalServerError, [errorResp]));
               }
-            
+              //Response object
               responseObject={yourarray:myArray,count:myArray.length,position:myArray.lastIndexOf(req.body.arrayData)}
               return res.json(helpers.sendJson(responseObject));
             
@@ -51,7 +52,7 @@ module.exports = (db, logger) => ({
               //if value exist in db
               //check position of data
                for(i=0;i<arrayRows.length;i++){
-                  if(arrayRows[i].dataValues.type=="number"){
+                  if(arrayRows[i].dataValues.type=="number"){ //check if type is number or string 
                     var dataValueNumber = parseInt(arrayRows[i].dataValues.dataValue) 
                     myArray.push(dataValueNumber);
                   }else{
@@ -69,6 +70,7 @@ module.exports = (db, logger) => ({
                      //Insert in db 
                      insertRow=await serializationHelper.insertInMultipleRow(req.body.arrayData,multipleDataTable.dataValues.id);
                       if(!insertRow){
+                        logger.error(`error in ${insertRow}`)
                         const errorResp = helpers.createError(enums.params.arrayValue,userDesc.dataNotUpdated, enums.errorTypes.serverError);
                         return res.json(helpers.sendErrorJson(enums.statusCodes.internalServerError, [errorResp]));
                       }
@@ -85,7 +87,7 @@ module.exports = (db, logger) => ({
             }
                 
             }catch(err){
-                logger.error(err)
+                logger.error(`In multiple row handler catch ${JSON.stringify(err)}`)
                 const seqError = (err.errors && err.errors.length > 0) ? err.errors[0] : err;
                 const errorResp = helpers.createError(seqError.path, seqError.message, seqError.type);
                 return res.json(helpers.sendErrorJson(enums.statusCodes.internalServerError, [errorResp]));
