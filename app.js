@@ -8,7 +8,6 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
-// const logger = require('pino')();
 const winston = require('winston')
 const cluster = require('cluster')
 const os =require("os");
@@ -32,12 +31,14 @@ if(cluster.isMaster){
   for(let i=0;i<n_cpus;i++){
     cluster.fork();
   }
+
 }else{
 
 
 
 function reqSerializer(req) {
   return {
+    pid:process.pid,
     method: req.method,
     url: req.url,
     body: req.body || {},
@@ -80,7 +81,7 @@ function normalizePort(val) {
   const port = parseInt(val, 10);
 
   // eslint-disable-next-line no-restricted-globals
-  if (isNaN(port)) {
+  if (isNaN(port)) { 
     // named pipe
     return val;
   }
@@ -153,8 +154,8 @@ const db = require('./models');
 const v1Routes = require('./routes/v1')(db, logger);
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'pug');
 
 app.use(helmet());
 app.use((req, res, next) => {
